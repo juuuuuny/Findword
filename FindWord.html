@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        div{
+            position:absolute; 
+        }
+    </style>
+    <script>
+        var myTxt = "";//텍스트 필드에 적은 글자 담기
+        var myDiv;//자바스크립트에 의해  동적으로 생성된 div태그 오브젝트
+        var myInterval;//일정한 간격으로 반복실행하는 내장 함수(행위자)       
+        var angle = 0;//sin값을 체크하는 변수
+        var yspeed = 0.05;//속도 증가값
+        var tx = 0;//x좌표의 target위치
+        var ty = 0;//y좌표의 target위치
+        var mouseOy=0;//출발 y값
+        var mouseOx=0;//출발 x값
+        var j = 0;//글자의 수만큼 체크해주는 변수
+        var myTimer;//얼만큼 시간이 흘렀는지 체크해주는 타이머 내장함수(객체,행위자)
+        var t = 0;//시작후 흐른 초
+
+        function init() {  //초기화 해주는 함수        
+            //i = 0;
+            angle = 0;
+            //t = 0
+            tx = 0;
+            ty = 0;
+            mouseOy = Math.random()* window.innerHeight
+            mouseOx = Math.random() * window.innerWidth
+           
+        }
+
+        function flyText() {            
+            myTxt = document.getElementById("insa").value
+            var tmpStr=""
+            for (var i = 0; i < myTxt.length; i++) { //글자 나눠서 위치시키기
+                tmpStr += "<div id=a" + i + " style=position:absolute;top:" + Math.random() * window.innerHeight + ";left:" + Math.random() * window.innerWidth + ";float:left;>" + myTxt.charAt(i) + "</div>"
+            }
+            document.write(tmpStr)
+            document.write("<input type='button' value='start' onclick='rolling()' >&nbsp;<input type='button' value='refresh' onclick='location.reload();'><p>")
+            document.write("<div id='count' style=font-size:12;font-family:'Malgun Gothic';margin-top:10;>* 지나간 초" + t + "</div>");//카운트 보여줄 div
+            myTimer = setTimeout(timer_f, 1000);//카운트 시작
+            //rolling()
+           
+           // alert(myTxt.charAt(0))
+        }
+        function rolling() {
+            clearTimeout(myTimer);//타이머멈추기
+            tx = window.innerWidth / 2;
+            ty = window.innerHeight / 2;
+            myDiv = document.getElementById("a" + j);
+           // alert(myDiv.textContent)
+            myInterval = setInterval(flyStart,6);
+
+        }
+        function timer_f() {
+            t++
+            document.getElementById('count').textContent = "* 지나간 초"+t/100;//카운트 증가시키기
+            myTimer = setTimeout(timer_f, 10);//카운트 시작
+        }
+        function flyStart() {
+           
+            //myDiv.textContent = Math.floor(Math.sin(angle) * 1000)
+            if (Math.floor(Math.sin(angle) * 1000) > 995) {             
+                clearInterval(myInterval)
+                init()
+                j++;//생성된 글자의 인덱스
+                if (j < myTxt.length) {
+                    rolling();
+                } else {
+                    //alert("끝")
+                    var tmpTxt=""
+                    for (var i = 0; i < myTxt.length; i++) { //글자 나눠서 위치시키기
+                        tmpTxt += document.getElementById("a" + i).textContent
+                        document.getElementById("a" + i).textContent=""
+                    }
+                    document.write("<div style=position:absolute;top:" + window.innerHeight/2 + ";left:" + window.innerWidth/2+">"+tmpTxt+"</div>")
+                   
+                }
+            } else {
+                angle += yspeed
+                myDiv = document.getElementById("a" + j);
+                myDiv.style.top = mouseOy + Math.sin(angle) * (ty - mouseOy) + "px";
+               myDiv.style.left = (mouseOx + Math.sin(angle) * (tx - mouseOx)) +(j*10)+ "px"; 
+ 
+            }
+
+
+        }
+
+    </script>
+</head>
+<body onload="init()">
+    <input type="password" value="" id="insa" />
+    <input type="button" onclick="flyText()" value="시작" />
+    <div id="aa" style="position:absolute;font-family:'Malgun Gothic';margin-top"></div>
+     
+</body>
+</html>
